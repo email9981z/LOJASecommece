@@ -2566,22 +2566,52 @@ window.addEventListener('load', function() {
             }
 
                         function addItem() {
+    // Pega o título do produto
     const productName = document.getElementById('main-product-title').innerText;
-    const price = selectedVariant.price; // Usa o preço da variante selecionada
-    const variantName = selectedVariant.name; // Pega o nome da variante
     
-    // No seu cart.push, certifique-se de incluir a variante:
-    cart.push({
-        id: productName + '-' + selectedVariant.id,
-        name: productName,
-        variant: variantName,
-        price: price,
-        // ... restante dos campos (image, quantity, etc)
-    });
+    // Pega o preço atual (já formatado pela variante selecionada)
+    const priceText = document.getElementById('mainPrice').innerText.replace('.', '').replace(',', '.');
+    const price = parseFloat(priceText);
     
+    // Pega a imagem (garante que use a primeira imagem do array productImages)
+    const image = (typeof productImages !== 'undefined' && productImages.length > 0) ? productImages[0] : '';
+    
+    // Pega o nome da variante selecionada (se existir)
+    const variantName = (typeof selectedVariant !== 'undefined') ? selectedVariant.name : "";
+    const variantId = (typeof selectedVariant !== 'undefined') ? selectedVariant.id : "padrao";
+
+    // Cria um ID único combinando produto e variante
+    const itemId = productName + '-' + variantId;
+    
+    // Verifica se o item já está no carrinho
+    const existingItem = cart.find(item => item.id === itemId);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        // Adiciona o novo item com todas as propriedades necessárias
+        cart.push({
+            id: itemId,
+            name: productName,
+            variant: variantName,
+            price: price,
+            image: image,
+            quantity: 1 // Garante que a quantidade comece em 1
+        });
+    }
+
+    // Atualiza a interface do carrinho
     window.updateCartUI();
-                if (!cartSidebar.classList.contains('active')) toggleCart();
-            }
+    
+    // Abre o carrinho se estiver fechado
+    if (typeof toggleCart === 'function') {
+        const cartSidebar = document.getElementById('cartSidebar');
+        if (cartSidebar && !cartSidebar.classList.contains('active')) {
+            toggleCart();
+        }
+    }
+}
+
 
             // Expose quantity control functions globally
             window.increaseQty = function(index) {
