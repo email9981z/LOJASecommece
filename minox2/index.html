@@ -2918,7 +2918,7 @@ window.addEventListener('load', function() {
     })();
     </script>
 
-        <!-- 
+   <!-- 
   NOTIFICAÇÕES DE PROVA SOCIAL - VERSÃO OTIMIZADA (UX/UI)
   Instruções: Substitua o bloco antigo por este no final do arquivo, antes do </body>.
 -->
@@ -3077,12 +3077,15 @@ window.addEventListener('load', function() {
 
         @media (max-width: 768px) {
             #notif-premium-container {
-                bottom: 20px;
+                /* AJUSTE AQUI: Se você tiver um botão fixo no mobile, 
+                   aumente este valor (ex: 80px ou 100px) para a notificação subir */
+                bottom: 95px; 
                 left: 10px;
                 right: 10px;
                 max-width: none;
                 margin: 0 auto;
                 width: calc(100% - 20px);
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.1);
             }
             .notif-premium-close {
                 opacity: 1; /* Sempre visível no mobile */
