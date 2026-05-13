@@ -2854,10 +2854,25 @@ window.addEventListener('load', function() {
                 mainBuyBtn.click();
             });
         }
-
+        
+        // 3. Countdown Timer Logic
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                display.textContent = minutes + ":" + seconds;
+                if (--timer < 0) timer = duration;
+            }, 1000);
+        }
+        const timerDisplay = document.querySelector('.scarcity-timer');
+        if (timerDisplay) startTimer(845, timerDisplay);
+    })();
     </script>
 
-   <!-- 
+        <!-- 
   NOTIFICAÇÕES DE PROVA SOCIAL - VERSÃO OTIMIZADA (UX/UI)
   Instruções: Substitua o bloco antigo por este no final do arquivo, antes do </body>.
 -->
@@ -2865,8 +2880,8 @@ window.addEventListener('load', function() {
 (function() {
     // --- CONFIGURAÇÕES OTIMIZADAS ---
     const config = {
-        intervaloMin: 10000, // Aumentado para 20s para ser menos intrusivo
-        intervaloMax: 35000, // Até 45s entre notificações
+        intervaloMin: 20000, // Aumentado para 20s para ser menos intrusivo
+        intervaloMax: 45000, // Até 45s entre notificações
         tempoExibicao: 5000,  // Reduzido para 5s (suficiente para leitura rápida)
         primeiroAtraso: 8000, // 8s após carregar (deixa o usuário ver o site primeiro)
         probabilidades: {
@@ -2888,6 +2903,7 @@ window.addEventListener('load', function() {
         produtos: [
             'Kit 3 Frascos (Tratamento Trimestral)',
             'Kit 6 Frascos (Tratamento Semestral)',
+            '1 Frasco (Tratamento Mensal)',
             'Kit 12 Frascos (Tratamento Anual)'
         ]
     };
@@ -3017,20 +3033,32 @@ window.addEventListener('load', function() {
             #notif-premium-container {
                 /* AJUSTE AQUI: Se você tiver um botão fixo no mobile, 
                    aumente este valor (ex: 80px ou 100px) para a notificação subir */
-                bottom: 95px; 
-                left: 10px;
-                right: 10px;
-                max-width: none;
-                margin: 0 auto;
-                width: calc(100% - 20px);
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.1);
+                bottom: 100px; 
+                left: 12px;
+                right: auto; /* Remove o esticamento para a direita */
+                max-width: 280px; /* Largura compacta no mobile */
+                width: auto;
+                margin: 0;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+                padding: 8px 12px;
+            }
+            .notif-premium-avatar-wrapper img {
+                width: 40px;
+                height: 40px;
+            }
+            .notif-premium-text {
+                font-size: 11.5px;
+                white-space: normal; /* Permite quebra de linha se necessário no mobile */
             }
             .notif-premium-close {
-                opacity: 1; /* Sempre visível no mobile */
-                top: 4px;
-                right: 4px;
-                border: none;
-                box-shadow: none;
+                opacity: 1;
+                top: -6px;
+                right: -6px;
+                width: 18px;
+                height: 18px;
+                font-size: 12px;
+                background: #fff;
+                border: 1px solid #eee;
             }
         }
     `;
