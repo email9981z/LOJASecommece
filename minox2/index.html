@@ -1201,8 +1201,23 @@
         }
         .live-notification.show { transform: translateX(0); }
         .live-notification img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #f1f5f9; }
-        .notif-content p { font-size: 13px; margin: 0; color: #1e293b; line-height: 1.4; }
+        .notif-content p { font-size: 13px; margin: 0; color: #1e293b; line-height: 1.4; padding-right: 15px; }
         .notif-content span { font-size: 11px; color: #94a3b8; font-weight: 500; }
+        
+        .close-notif {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            font-size: 18px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .close-notif:hover { color: #94a3b8; }
 
         /* Shimmer Animation */
         .btn-shimmer { position: relative; overflow: hidden; }
@@ -1324,8 +1339,23 @@
         }
         .live-notification.show { transform: translateX(0); }
         .live-notification img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #f1f5f9; }
-        .notif-content p { font-size: 13px; margin: 0; color: #1e293b; line-height: 1.4; }
+        .notif-content p { font-size: 13px; margin: 0; color: #1e293b; line-height: 1.4; padding-right: 15px; }
         .notif-content span { font-size: 11px; color: #94a3b8; font-weight: 500; }
+        
+        .close-notif {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            font-size: 18px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .close-notif:hover { color: #94a3b8; }
 
         /* Shimmer Animation */
         .btn-shimmer { position: relative; overflow: hidden; }
@@ -1482,7 +1512,7 @@
     </div>
     <div class="stock-bar-container">
     <div class="stock-label">
-        <span style="color: #dc2626;"><i class="fas fa-fire"></i> Restam poucas unidades em promoção</span>
+        <span style="color: #dc2626;"><i class="fas fa-fire"></i> Restam apenas 4 kits em promoção</span>
         <span style="color: #6b7280;">97% vendido</span>
     </div>
     <div class="stock-bar">
@@ -2765,6 +2795,7 @@ window.addEventListener('load', function() {
 
     <!-- Live Sales Notification -->
     <div class="live-notification" id="liveNotification">
+        <button class="close-notif" id="closeNotif">&times;</button>
         <img src="https://i.pravatar.cc/100?u=1" id="notifAvatar" alt="User">
         <div class="notif-content">
             <p id="notifText"><strong>João Silva</strong> de São Paulo/SP acabou de comprar!</p>
@@ -2812,7 +2843,7 @@ window.addEventListener('load', function() {
             });
         }
 
-        // 2. Infinite Social Proof Logic
+        // 2. Infinite Social Proof Logic with Manual Close
         const firstNames = ['Ricardo', 'Felipe', 'Marcos', 'André', 'Gustavo', 'Lucas', 'Vinícius', 'João', 'Mateus', 'Diego', 'Bruno', 'Thiago', 'Rafael', 'Gabriel', 'Marcelo', 'Rodrigo', 'Alexandre', 'Fernando', 'Samuel', 'Leonardo'];
         const lastNames = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Pereira', 'Costa', 'Ferreira', 'Alves', 'Rocha', 'Mendes', 'Lima', 'Gomes', 'Ribeiro', 'Martins', 'Carvalho', 'Almeida', 'Lopes', 'Soares', 'Fernandes', 'Vieira'];
         const cities = [
@@ -2823,16 +2854,25 @@ window.addEventListener('load', function() {
         ];
         
         const notification = document.getElementById('liveNotification');
+        const closeBtn = document.getElementById('closeNotif');
         let lastIndex = -1;
+        let isPaused = false;
         
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notification.classList.remove('show');
+            isPaused = true;
+            setTimeout(() => { isPaused = false; }, 30000); // Pause for 30s if closed manually
+        });
+
         function showNotification() {
-            // Generate unique combination
+            if (isPaused) return;
+            
             const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
             const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
             const city = cities[Math.floor(Math.random() * cities.length)];
             const time = Math.floor(Math.random() * 4) + 1;
             
-            // Avoid same photo twice in a row
             let photoId;
             do {
                 photoId = Math.floor(Math.random() * 99);
@@ -2846,11 +2886,11 @@ window.addEventListener('load', function() {
             notification.classList.add('show');
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 5000);
+            }, 6000);
         }
         
         setTimeout(showNotification, 4000);
-        setInterval(showNotification, 20000); // Increased interval slightly for realism
+        setInterval(showNotification, 22000);
 
         // 3. Countdown Timer Logic
         function startTimer(duration, display) {
