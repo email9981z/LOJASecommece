@@ -2326,6 +2326,10 @@ const cities = ["São Paulo", "Rio de Janeiro", "Belo Horizonte", "Curitiba", "S
 function showNotification() {
     const notif = document.getElementById('liveNotification');
     if(!notif) return;
+
+    // Não mostrar se o carrinho estiver aberto
+    const cartSidebar = document.getElementById('cartSidebar');
+    if (cartSidebar && cartSidebar.classList.contains('active')) return;
     
     const randomName = names[Math.floor(Math.random() * names.length)];
     const randomCity = cities[Math.floor(Math.random() * cities.length)];
@@ -2371,6 +2375,10 @@ window.addEventListener('load', function() {
                 } else {
                     cartOverlay.classList.add('active');
                     cartSidebar.classList.add('active');
+                    
+                    // Esconder notificação se estiver aparecendo ao abrir o carrinho
+                    const notif = document.getElementById('liveNotification');
+                    if (notif) notif.classList.remove('show');
                 }
             }
 
