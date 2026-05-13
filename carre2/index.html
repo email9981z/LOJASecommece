@@ -1473,35 +1473,22 @@ body:has(.cart-overlay.active) #notif-premium-container {
     border: 2px solid var(--border);
     border-radius: 12px;
     padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     background: #fff;
-    position: relative;
 }
 
-.variant-card.active {
-    border-color: var(--brand-primary);
-    background: #f0f4ff;
-    box-shadow: 0 8px 24px rgba(0, 0, 102, 0.1);
-}
+.variant-card:hover { border-color: #cbd5e1; }
+.variant-card.active { border-color: var(--brand-primary); background: #f0f4ff; }
 
-.variant-checkbox {
-    width: 20px; height: 20px;
-    border: 2px solid var(--border);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 8px;
-}
-
-.variant-card.active .variant-checkbox {
-    background: var(--brand-primary);
-    border-color: var(--brand-primary);
-    color: #fff;
-}
-
-.variant-name { font-weight: 700; font-size: 15px; }
-.variant-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-.variant-price { font-weight: 800; color: var(--brand-primary); }
+.variant-info .variant-name { display: block; font-weight: 700; font-size: 14px; color: var(--text-main); }
+.variant-info .variant-desc { font-size: 12px; color: var(--text-muted); }
+.variant-price-container { text-align: right; }
+.variant-price-container .variant-price { font-weight: 800; color: var(--brand-primary); }
+.variant-price-container .variant-tag { font-size: 9px; background: var(--brand-primary); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
 
     
     </style>
@@ -1695,10 +1682,14 @@ function initializeVariants() {
     const container = document.getElementById('variantsContainer');
     container.innerHTML = variants.map(v => `
         <div class="variant-card ${v.isDefault ? 'active' : ''}" onclick="selectVariant('${v.id}')" id="var-${v.id}">
-            <div class="variant-checkbox">${v.isDefault ? '<i class="fas fa-check" style="font-size:10px"></i>' : ''}</div>
-            <div class="variant-name">${v.name}</div>
-            <div class="variant-desc">${v.description}</div>
-            <div class="variant-price">R$ ${v.price.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+            <div class="variant-info">
+                <span class="variant-name">${v.name}</span>
+                <span class="variant-desc">${v.description}</span>
+            </div>
+            <div class="variant-price-container">
+                <span class="variant-price">R$ ${v.price.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span><br>
+                ${v.discount ? `<span class="variant-tag">${v.discount}% OFF</span>` : ''}
+            </div>
         </div>
     `).join('');
 }
@@ -1709,11 +1700,9 @@ function selectVariant(id) {
     
     // Atualiza visual dos cards
     document.querySelectorAll('.variant-card').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.variant-checkbox').forEach(cb => cb.innerHTML = '');
     
     const activeCard = document.getElementById(`var-${id}`);
     activeCard.classList.add('active');
-    activeCard.querySelector('.variant-checkbox').innerHTML = '<i class="fas fa-check" style="font-size:10px"></i>';
     
     // Atualiza os preços na página
     document.getElementById('mainPrice').innerText = selectedVariant.price.toLocaleString('pt-BR', {minimumFractionDigits: 2});
