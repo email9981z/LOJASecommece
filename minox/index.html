@@ -119,6 +119,13 @@
 }
 
 .live-notification.show { transform: translateX(0); }
+/* Esconder notificações quando o carrinho estiver aberto */
+body:has(.cart-overlay.active) .live-notification,
+body:has(.cart-overlay.active) #notif-premium-container { 
+    display: none !important; 
+    opacity: 0 !important; 
+    visibility: hidden !important; 
+}
 .live-notification img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #000066; }
 
 /* Contador de Visualizações */
@@ -1200,6 +1207,13 @@
             max-width: 300px;
         }
         .live-notification.show { transform: translateX(0); }
+/* Esconder notificações quando o carrinho estiver aberto */
+body:has(.cart-overlay.active) .live-notification,
+body:has(.cart-overlay.active) #notif-premium-container { 
+    display: none !important; 
+    opacity: 0 !important; 
+    visibility: hidden !important; 
+}
         .live-notification img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #f1f5f9; }
         .notif-content p { font-size: 13px; margin: 0; color: #1e293b; line-height: 1.4; padding-right: 20px; }
         .notif-content span { font-size: 11px; color: #94a3b8; font-weight: 500; }
@@ -1344,6 +1358,13 @@
             max-width: 300px;
         }
         .live-notification.show { transform: translateX(0); }
+/* Esconder notificações quando o carrinho estiver aberto */
+body:has(.cart-overlay.active) .live-notification,
+body:has(.cart-overlay.active) #notif-premium-container { 
+    display: none !important; 
+    opacity: 0 !important; 
+    visibility: hidden !important; 
+}
         .live-notification img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #f1f5f9; }
         .notif-content p { font-size: 13px; margin: 0; color: #1e293b; line-height: 1.4; padding-right: 20px; }
         .notif-content span { font-size: 11px; color: #94a3b8; font-weight: 500; }
@@ -3173,6 +3194,10 @@ if (timerDisplay) {
 
     function showNotification() {
         if (isPaused || sessionStorage.getItem('notif_closed')) return;
+
+        // Não mostrar se o carrinho estiver aberto
+        const cartSidebar = document.getElementById('cartSidebar');
+        if (cartSidebar && cartSidebar.classList.contains('active')) return;
 
         const rand = Math.random();
         let type = 'compra';
