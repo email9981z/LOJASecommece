@@ -1662,7 +1662,13 @@ const variants = [
         price: 89.90,
         oldPrice: 176.20,
         discount: 38,
-        isDefault: true
+        isDefault: true,
+        images: [
+            "https://i.postimg.cc/qqGv7Cbj/Chat-GPT-Image-19-de-abr-de-2026-16-36-27.png",
+            "https://i.postimg.cc/631sJcyX/minoxidil-kirkland-1-mes-69a859ff2ef16-large.png",
+            "https://i.postimg.cc/PxqGR9fS/minoxidil-kirkland-1-mes-69a859ff3152e-large.png",
+            "https://i.postimg.cc/pTdN64VD/minoxidil-kirkland-1-mes-69a859fe8085c-large.png"
+        ]
     },
     {
         id: 'fonte',
@@ -1671,7 +1677,11 @@ const variants = [
         price: 59.90,
         oldPrice: 119.90,
         discount: 50,
-        isDefault: false
+        isDefault: false,
+        images: [
+            "https://i.postimg.cc/631sJcyX/minoxidil-kirkland-1-mes-69a859ff2ef16-large.png",
+            "https://i.postimg.cc/PxqGR9fS/minoxidil-kirkland-1-mes-69a859ff3152e-large.png"
+        ]
     }
 ];
 
@@ -1712,6 +1722,17 @@ function selectVariant(id) {
     const valorParcela = (selectedVariant.oldPrice / 3).toLocaleString('pt-BR', {minimumFractionDigits: 2});
     const installmentEl = document.querySelector('.installment-text');
     if(installmentEl) installmentEl.innerHTML = `ou R$ ${selectedVariant.oldPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})} em até 3x sem juros`;
+
+    // Atualiza a galeria de imagens
+    if (typeof initGallery === 'function') {
+        initGallery();
+    }
+
+    // Rola para o topo da página suavemente
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 }
 
 // 4. Chame a inicialização dentro do seu DOMContentLoaded
@@ -2191,12 +2212,12 @@ const productImages = [
 
 
 
-        function initGallery() {
+function initGallery() {
     const slider = document.getElementById('imageSlider');
     const thumbContainer = document.getElementById('thumbnailsContainer');
     
     // Pega as imagens da variante atual
-    const images = productImages;
+    const images = (selectedVariant && selectedVariant.images) ? selectedVariant.images : productImages;
     
     slider.innerHTML = images.map(img => `
         <div class="main-image-item">
