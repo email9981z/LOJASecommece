@@ -2856,19 +2856,46 @@ window.addEventListener('load', function() {
         }
         
         // 3. Countdown Timer Logic
-        function startTimer(duration, display) {
-            let timer = duration, minutes, seconds;
-            setInterval(function () {
-                minutes = parseInt(timer / 60, 10);
-                seconds = parseInt(timer % 60, 10);
+        function startTimer(durationInSeconds, display) {
+            const STORAGE_KEY = 'oferta_timer_end_time';
+            let endTime = localStorage.getItem(STORAGE_KEY);
+            const now = Math.floor(Date.now() / 1000);
+
+            if (!endTime || parseInt(endTime) < now) {
+                endTime = now + durationInSeconds;
+                localStorage.setItem(STORAGE_KEY, endTime);
+            } else {
+                endTime = parseInt(endTime);
+            }
+
+            function updateTimer() {
+                const currentTime = Math.floor(Date.now() / 1000);
+                let remaining = endTime - currentTime;
+
+                if (remaining <= 0) {
+                    // Se o tempo acabar, reinicia ou para. Aqui reiniciamos conforme o comportamento original.
+                    endTime = Math.floor(Date.now() / 1000) + durationInSeconds;
+                    localStorage.setItem(STORAGE_KEY, endTime);
+                    remaining = durationInSeconds;
+                }
+
+                let minutes = Math.floor(remaining / 60);
+                let seconds = remaining % 60;
+
                 minutes = minutes < 10 ? "0" + minutes : minutes;
                 seconds = seconds < 10 ? "0" + seconds : seconds;
+
                 display.textContent = minutes + ":" + seconds;
-                if (--timer < 0) timer = duration;
-            }, 1000);
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
         }
         const timerDisplay = document.querySelector('.scarcity-timer');
-        if (timerDisplay) startTimer(845, timerDisplay);
+        if (timerDisplay) {
+            const duration = (23 * 60) + 48; // 23:48 em segundos
+            startTimer(duration, timerDisplay);
+        }
     })();
     </script>
 
