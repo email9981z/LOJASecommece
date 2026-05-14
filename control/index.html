@@ -2236,19 +2236,52 @@ const productImages = [
         });
 
                 // LÓGICA DAS AVALIAÇÕES E TABS
-        const reviewImages = [
-    "https://i.postimg.cc/FKt480wW/ps5-controller-review-1.jpg",
-    "https://i.postimg.cc/N06X1g9N/ps5-controller-review-2.jpg",
-    "https://i.postimg.cc/fR11931p/ps5-controller-review-3.jpg",
-    "https://i.postimg.cc/d162x81L/ps5-controller-review-4.jpg"
-];
+        // COLE SEUS LINKS ABAIXO (UM POR LINHA, SEM ASPAS OU VÍRGULAS)
+        const reviewImagesRaw = `
+https://http2.mlstatic.com/D_NQ_NP_2X_712865-MLA94145378192_102025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_980200-MLA99026083766_112025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_697979-MLA99924488980_122025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_799514-MLA93286320693_092025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_966551-MLA109092382566_042026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_773111-MLA104145341742_012026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_647842-MLA109809073254_042026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_943525-MLA82210012559_022025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_902924-MLA104301249242_012026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_712429-MLA81929575572_022025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_604399-MLA99229715813_112025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_785867-MLA109929846483_042026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_686125-MLA102166518300_122025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_815109-MLA99817333683_112025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_690220-MLA110688778872_052026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_865561-MLA76889616528_062024-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_910000-MLA109981297597_042026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_932043-MLA96137548487_102025-F.webp
+`;
 
-const carouselImages = [
-    "https://i.postimg.cc/Qd05432R/ps5-controller-carousel-1.jpg",
-    "https://i.postimg.cc/SK7w33t3/ps5-controller-carousel-2.jpg",
-    "https://i.postimg.cc/Y0217112/ps5-controller-carousel-3.jpg",
-    "https://i.postimg.cc/J09X4567/ps5-controller-carousel-4.jpg"
-];
+        const carouselImagesRaw = `
+https://http2.mlstatic.com/D_NQ_NP_2X_712865-MLA94145378192_102025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_980200-MLA99026083766_112025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_697979-MLA99924488980_122025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_799514-MLA93286320693_092025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_966551-MLA109092382566_042026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_773111-MLA104145341742_012026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_647842-MLA109809073254_042026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_943525-MLA82210012559_022025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_902924-MLA104301249242_012026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_712429-MLA81929575572_022025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_604399-MLA99229715813_112025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_785867-MLA109929846483_042026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_686125-MLA102166518300_122025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_815109-MLA99817333683_112025-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_690220-MLA110688778872_052026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_865561-MLA76889616528_062024-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_910000-MLA109981297597_042026-F.webp
+https://http2.mlstatic.com/D_NQ_NP_2X_932043-MLA96137548487_102025-F.webp
+`;
+
+        // Processamento automático das listas
+        const reviewImages = reviewImagesRaw.trim().split('\n').map(url => url.trim()).filter(url => url !== '');
+        const carouselImages = carouselImagesRaw.trim().split('\n').map(url => url.trim()).filter(url => url !== '');
 
 const allReviews = [
             {'name': 'Gustavo Martins', 'date': 'Hoje', 'rating': 5, 'content': 'O feedback tátil é impressionante, sinto cada detalhe do jogo. Controle original e de extrema qualidade!'},
