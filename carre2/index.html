@@ -82,11 +82,20 @@
             max-height: 95%;
             border-radius: 8px;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            transform: scale(0.9);
+            transform: scale(0.9) translate(0, 0);
             transition: transform 0.3s ease;
-            cursor: grab;
+            cursor: zoom-in;
             user-select: none;
             -webkit-user-drag: none;
+            touch-action: none;
+            will-change: transform;
+        }
+        .image-modal.zoomed .image-modal-content {
+            cursor: grab;
+            transition: none;
+        }
+        .image-modal.zoomed.dragging .image-modal-content {
+            cursor: grabbing;
         }
         .image-modal.active .image-modal-content {
             transform: scale(1);
@@ -2676,22 +2685,176 @@ const allReviews = [
         }
 
         
-        window.openImageModal = function(src) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            if (modal && modalImg) {
-                modalImg.src = src;
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
+        (function() {
+            let scale = 1;
+            let lastScale = 1;
+            let posX = 0;
+            let posY = 0;
+            let lastPosX = 0;
+            let lastPosY = 0;
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let initialPinchDistance = 0;
+
+            window.openImageModal = function(src) {
+                const modal = document.getElementById('imageModal');
+                const modalImg = document.getElementById('modalImage');
+                if (modal && modalImg) {
+                    modalImg.src = src;
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    resetZoom();
+                }
             }
-        }
-        window.closeImageModal = function() {
-            const modal = document.getElementById('imageModal');
-            if (modal) {
-                modal.classList.remove('active');
-                document.body.style.overflow = '';
+
+            window.closeImageModal = function(e) {
+                if (e && e.target !== e.currentTarget && !e.target.classList.contains('image-modal-close')) return;
+                const modal = document.getElementById('imageModal');
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                    resetZoom();
+                }
             }
-        }
+
+            function resetZoom() {
+                scale = 1;
+                lastScale = 1;
+                posX = 0;
+                posY = 0;
+                lastPosX = 0;
+                lastPosY = 0;
+                const modal = document.getElementById('imageModal');
+                const modalImg = document.getElementById('modalImage');
+                if (modal) modal.classList.remove('zoomed', 'dragging');
+                if (modalImg) {
+                    modalImg.style.transform = `scale(1) translate(0, 0)`;
+                    modalImg.style.transition = 'transform 0.3s ease';
+                }
+            }
+
+            function updateTransform() {
+                const modalImg = document.getElementById('modalImage');
+                const modal = document.getElementById('imageModal');
+                if (!modalImg) return;
+
+                if (scale > 1) {
+                    modal.classList.add('zoomed');
+                } else {
+                    modal.classList.remove('zoomed');
+                    posX = 0;
+                    posY = 0;
+                }
+
+                modalImg.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const modalImg = document.getElementById('modalImage');
+                const modal = document.getElementById('imageModal');
+                if (!modalImg || !modal) return;
+
+                // Prevent default drag
+                modalImg.addEventListener('dragstart', (e) => e.preventDefault());
+
+                // Mouse Wheel Zoom
+                modal.addEventListener('wheel', (e) => {
+                    if (!modal.classList.contains('active')) return;
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? -0.2 : 0.2;
+                    const newScale = Math.min(Math.max(1, scale + delta), 4);
+                    
+                    if (newScale !== scale) {
+                        scale = newScale;
+                        if (scale === 1) {
+                            posX = 0;
+                            posY = 0;
+                        }
+                        modalImg.style.transition = 'transform 0.2s ease';
+                        updateTransform();
+                    }
+                }, { passive: false });
+
+                // Double Click Zoom
+                modalImg.addEventListener('dblclick', (e) => {
+                    if (scale > 1) {
+                        resetZoom();
+                    } else {
+                        scale = 2.5;
+                        modalImg.style.transition = 'transform 0.3s ease';
+                        updateTransform();
+                    }
+                });
+
+                // Drag / Pan
+                const startDrag = (x, y) => {
+                    if (scale <= 1) return;
+                    isDragging = true;
+                    startX = x - posX;
+                    startY = y - posY;
+                    modal.classList.add('dragging');
+                    modalImg.style.transition = 'none';
+                };
+
+                const doDrag = (x, y) => {
+                    if (!isDragging) return;
+                    posX = x - startX;
+                    posY = y - startY;
+                    updateTransform();
+                };
+
+                const stopDrag = () => {
+                    isDragging = false;
+                    modal.classList.remove('dragging');
+                };
+
+                modal.addEventListener('mousedown', (e) => {
+                    if (e.target === modalImg) startDrag(e.clientX, e.clientY);
+                });
+                window.addEventListener('mousemove', (e) => doDrag(e.clientX, e.clientY));
+                window.addEventListener('mouseup', stopDrag);
+
+                // Touch Events (Pinch & Pan)
+                modal.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) {
+                        if (scale > 1) {
+                            startDrag(e.touches[0].clientX, e.touches[0].clientY);
+                        }
+                    } else if (e.touches.length === 2) {
+                        isDragging = false;
+                        initialPinchDistance = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        lastScale = scale;
+                        modalImg.style.transition = 'none';
+                    }
+                }, { passive: true });
+
+                modal.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 1 && isDragging) {
+                        doDrag(e.touches[0].clientX, e.touches[0].clientY);
+                    } else if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const currentDistance = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        const delta = currentDistance / initialPinchDistance;
+                        scale = Math.min(Math.max(1, lastScale * delta), 4);
+                        updateTransform();
+                    }
+                }, { passive: false });
+
+                modal.addEventListener('touchend', (e) => {
+                    stopDrag();
+                    if (e.touches.length < 2) {
+                        initialPinchDistance = 0;
+                    }
+                });
+            });
+        })();
     
         function scrollToReviews() {
             const section = document.querySelector('.reviews-section');
@@ -3359,8 +3522,8 @@ if (timerDisplay) {
     </script>
     
 <!-- Modal para Visualização de Imagem -->
-    <div id="imageModal" class="image-modal" onclick="window.closeImageModal()">
-        <span class="image-modal-close" onclick="window.closeImageModal()">&times;</span>
+    <div id="imageModal" class="image-modal" onclick="window.closeImageModal(event)">
+        <span class="image-modal-close" onclick="window.closeImageModal(event)">&times;</span>
         <img class="image-modal-content" id="modalImage">
     </div>
 </body>
