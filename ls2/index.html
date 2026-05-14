@@ -1580,24 +1580,23 @@ body:has(.cart-overlay.active) #notif-premium-container {
 }
 
 .variants-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
 }
+
+@media (min-width: 768px) { .variants-grid { grid-template-columns: 1fr 1fr; } }
 
 .variant-card {
     border: 2px solid var(--border);
-    border-radius: 8px;
-    width: 50px;
-    height: 50px;
+    border-radius: 12px;
+    padding: 16px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     cursor: pointer;
     transition: all 0.2s ease;
     background: #fff;
-    font-weight: 700;
-    font-size: 16px;
 }
 
 .variant-card:hover { border-color: #cbd5e1; }
@@ -1829,7 +1828,14 @@ function initializeVariants() {
     const container = document.getElementById('variantsContainer');
     container.innerHTML = variants.map(v => `
         <div class="variant-card ${v.isDefault ? 'active' : ''}" onclick="selectVariant('${v.id}')" id="var-${v.id}">
-            ${v.id}
+            <div class="variant-info">
+                <span class="variant-name">${v.name}</span>
+                <span class="variant-desc">${v.description}</span>
+            </div>
+            <div class="variant-price-container">
+                <span class="variant-price">R$ ${v.price.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span><br>
+                ${v.discount ? `<span class="variant-tag">${v.discount}% OFF</span>` : ''}
+            </div>
         </div>
     `).join('');
 }
@@ -1858,7 +1864,7 @@ function selectVariant(id) {
         initGallery();
     }
 
-    // Rola para o topo removida para melhor experiência na seleção de tamanhos
+
 }
 
 // 4. Chame a inicialização dentro do seu DOMContentLoaded
