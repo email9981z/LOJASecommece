@@ -2379,11 +2379,36 @@ const allReviews = [
         function renderCarousel() {
             const carouselContainer = document.getElementById('reviewCarousel');
             if (!carouselContainer) return;
-            carouselContainer.innerHTML = carouselImages.map(img => `
-                <div class="carousel-item">
+            
+            // Duplicamos as imagens para criar a sensação de infinito
+            // Criamos 3 conjuntos: [Original] [Original] [Original]
+            const tripleImages = [...carouselImages, ...carouselImages, ...carouselImages];
+            
+            carouselContainer.innerHTML = tripleImages.map(img => `
+                <div class="carousel-item" onclick="openImageModal('${img}')">
                     <img src="${img}" alt="Avaliação do Cliente">
                 </div>
             `).join('');
+
+            // Lógica de Scroll Infinito
+            carouselContainer.addEventListener('scroll', () => {
+                const itemWidth = carouselContainer.querySelector('.carousel-item').offsetWidth + 12; // largura + gap
+                const totalWidth = carouselImages.length * itemWidth;
+                
+                if (carouselContainer.scrollLeft <= 0) {
+                    // Se chegou no início do primeiro bloco, pula para o início do segundo bloco
+                    carouselContainer.scrollLeft = totalWidth;
+                } else if (carouselContainer.scrollLeft >= totalWidth * 2) {
+                    // Se chegou no final do terceiro bloco, pula para o final do segundo bloco
+                    carouselContainer.scrollLeft = totalWidth;
+                }
+            });
+
+            // Posiciona no meio (início do segundo bloco) ao carregar
+            setTimeout(() => {
+                const itemWidth = carouselContainer.querySelector('.carousel-item').offsetWidth + 12;
+                carouselContainer.scrollLeft = carouselImages.length * itemWidth;
+            }, 100);
         }
 
         function renderReviews(page) {
