@@ -2486,10 +2486,11 @@ const allReviews = [
                 let starsHtml = '';
                 for(let i=0; i<5; i++) starsHtml += `<i class="${i < review.rating ? 'fas' : 'far'} fa-star"></i>`;
                 
-                // Lógica para pegar imagens de forma cíclica para as duas primeiras avaliações de cada bloco
+                // Lógica para cada avaliação ter uma imagem diferente seguindo a ordem do carrossel
                 let imageHtml = '';
-                if (index < 2) {
-                    const imageIndex = (index) % reviewImages.length;
+                if (index < 4) {
+                    // imageIndex usa startIndex (página) + index (posição na página) para ser único
+                    const imageIndex = (startIndex + index) % reviewImages.length;
                     imageHtml = `<div class="review-image-container" onclick="openImageModal('${reviewImages[imageIndex]}')"><img src="${reviewImages[imageIndex]}" alt="Avaliação do Cliente" class="review-image"></div>`;
                 }
 
