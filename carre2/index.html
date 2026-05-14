@@ -2373,11 +2373,7 @@ function initGallery() {
 
 
         // Initialize on load
-        window.onload = () => {
-            initGallery();
-            renderCarousel();
-            renderReviews(currentPage);
-        };
+        
         
         // Listen for scroll on main slider to sync thumbnails
         document.getElementById('imageSlider').addEventListener('scroll', () => {
@@ -2680,124 +2676,16 @@ const allReviews = [
             evt.currentTarget.classList.add("active");
         }
 
-        // Funções para o Modal de Imagem (Lightbox)
-        let modalZoom = {
-            scale: 1,
-            lastScale: 1,
-            posX: 0,
-            posY: 0,
-            lastPosX: 0,
-            lastPosY: 0,
-            isDragging: false,
-            startTouch: { x: 0, y: 0 },
-            initialDistance: 0
-        };
-
-        function openImageModal(src) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImg');
-            modal.classList.add('active');
-            modalImg.src = src;
-            document.body.style.overflow = 'hidden';
-            
-            // Reset zoom state
-            resetZoom();
-            
-            // Adiciona estado no histórico para interceptar o botão voltar
-            if (window.history.state !== 'modal-open') {
-                window.history.pushState('modal-open', '');
-            }
-        }
-
-        function closeImageModal(fromHistory = false) {
-            const modal = document.getElementById('imageModal');
-            if (!modal.classList.contains('active')) return;
-            
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            
-            // Se não veio do evento popstate, remove o estado do histórico
-            if (!fromHistory && window.history.state === 'modal-open') {
-                window.history.back();
-            }
-            
-            setTimeout(resetZoom, 300);
-        }
-
-        function resetZoom() {
-            const modalImg = document.getElementById('modalImg');
-            modalZoom = {
-                scale: 1, lastScale: 1, posX: 0, posY: 0,
-                lastPosX: 0, lastPosY: 0, isDragging: false,
-                startTouch: { x: 0, y: 0 }, initialDistance: 0
-            };
-            if (modalImg) {
-                modalImg.style.transform = `translate(0px, 0px) scale(1)`;
-                modalImg.style.transition = 'transform 0.3s ease';
-            }
-        }
-
-        // Interceptar botão voltar
-        window.addEventListener('popstate', function(event) {
-            closeImageModal(true);
-        });
-
-        // Lógica de Zoom e Arrastar
-        window.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImg');
-
-            if (!modal || !modalImg) return;
-
-            modalImg.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 1) {
-                    modalZoom.isDragging = true;
-                    modalZoom.startTouch = { x: e.touches[0].clientX - modalZoom.posX, y: e.touches[0].clientY - modalZoom.posY };
-                    modalImg.style.transition = 'none';
-                } else if (e.touches.length === 2) {
-                    modalZoom.isDragging = false;
-                    modalZoom.initialDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                }
-            });
-
-            modalImg.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                if (e.touches.length === 1 && modalZoom.isDragging && modalZoom.scale > 1) {
-                    modalZoom.posX = e.touches[0].clientX - modalZoom.startTouch.x;
-                    modalZoom.posY = e.touches[0].clientY - modalZoom.startTouch.y;
-                    updateTransform();
-                } else if (e.touches.length === 2) {
-                    const currentDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    const delta = currentDistance / modalZoom.initialDistance;
-                    modalZoom.scale = Math.min(Math.max(1, modalZoom.lastScale * delta), 4);
-                    updateTransform();
-                }
-            }, { passive: false });
-
-            modalImg.addEventListener('touchend', (e) => {
-                modalZoom.isDragging = false;
-                modalZoom.lastScale = modalZoom.scale;
-                if (modalZoom.scale <= 1) resetZoom();
-            });
-
-            function updateTransform() {
-                modalImg.style.transform = `translate(${modalZoom.posX}px, ${modalZoom.posY}px) scale(${modalZoom.scale})`;
-            }
-
-            // Prevenir fechamento ao clicar na imagem
-            modalImg.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-        });
-
         // Inicializar avaliações ao carregar
-        window.addEventListener('DOMContentLoaded', () => { renderReviews(1); });
+        
+
+        
+        window.addEventListener('load', () => {
+            // Garante que a galeria, o carrossel e as avaliações sejam iniciados
+            if (typeof initGallery === 'function') initGallery();
+            if (typeof renderCarousel === 'function') renderCarousel();
+            if (typeof renderReviews === 'function') renderReviews(1);
+        });
 
         // 1. Cronômetro Regressivo
 function startTimer(durationInSeconds, display) {
@@ -2927,30 +2815,57 @@ function startTimer(durationInSeconds, display) {
             }
 
                         function addItem() {
-                const productName = document.getElementById('main-product-title').innerText;
-                const priceText = document.getElementById('mainPrice').innerText.replace('.', '').replace(',', '.');
-                const price = parseFloat(priceText);
-                const image = productImages[0];
+    // Pega o título do produto
+    const productName = document.getElementById('main-product-title').innerText;
+    
+    // Pega o preço atual (já formatado pela variante selecionada)
+    const priceText = document.getElementById('mainPrice').innerText.replace('.', '').replace(',', '.');
+    const price = parseFloat(priceText);
+    
+    // Pega a imagem (prioriza a primeira imagem da variante selecionada)
+    let image = "";
+    if (typeof selectedVariant !== 'undefined' && selectedVariant.images && selectedVariant.images.length > 0) {
+        image = selectedVariant.images[0];
+    } else if (typeof productImages !== 'undefined' && productImages.length > 0) {
+        image = productImages[0];
+    }
+    
+    // Pega o nome da variante selecionada (se existir)
+    const variantName = (typeof selectedVariant !== 'undefined') ? selectedVariant.name : "";
+    const variantId = (typeof selectedVariant !== 'undefined') ? selectedVariant.id : "padrao";
 
-                const itemId = productName;
-                const existingItem = cart.find(item => item.id === itemId);
+    // Cria um ID único combinando produto e variante
+    const itemId = productName + '-' + variantId;
+    
+    // Verifica se o item já está no carrinho
+    const existingItem = cart.find(item => item.id === itemId);
 
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    cart.push({
-                        id: itemId,
-                        name: productName,
-                        variant: "",
-                        price: price,
-                        image: image,
-                        quantity: 1
-                    });
-                }
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        // Adiciona o novo item com todas as propriedades necessárias
+        cart.push({
+            id: itemId,
+            name: productName,
+            variant: variantName,
+            price: price,
+            image: image,
+            quantity: 1 // Garante que a quantidade comece em 1
+        });
+    }
 
-                window.updateCartUI();
-                if (!cartSidebar.classList.contains('active')) toggleCart();
-            }
+    // Atualiza a interface do carrinho
+    window.updateCartUI();
+    
+    // Abre o carrinho se estiver fechado
+    if (typeof toggleCart === 'function') {
+        const cartSidebar = document.getElementById('cartSidebar');
+        if (cartSidebar && !cartSidebar.classList.contains('active')) {
+            toggleCart();
+        }
+    }
+}
+
 
             // Expose quantity control functions globally
             window.increaseQty = function(index) {
@@ -3267,7 +3182,7 @@ function startTimer(durationInSeconds, display) {
                 // Show loading state
                 btn.classList.add('loading');
 
-                // Captura o valor total já somado (Subtotal + Frete) do elemento correto
+                // Captura os valores formatados para número
 const totalFinal = document.getElementById('checkoutTotal').innerText.replace('R$ ', '').replace('.', '').replace(',', '.');
 
 const address = document.getElementById('summaryAddress').innerText;
