@@ -2738,42 +2738,6 @@ function startTimer(durationInSeconds, display) {
     setInterval(updateTimer, 1000);
 }
 
-
-// 2. Notificações de Vendas
-const names = ["Ricardo M.", "Ana Paula S.", "Marcos V.", "Juliana F.", "Carlos E.", "Beatriz L."];
-const cities = ["São Paulo", "Rio de Janeiro", "Belo Horizonte", "Curitiba", "Salvador", "Porto Alegre"];
-
-function showNotification() {
-    const notif = document.getElementById('liveNotification');
-    if(!notif) return;
-
-    // Não mostrar se o carrinho estiver aberto
-    const cartSidebar = document.getElementById('cartSidebar');
-    if (cartSidebar && cartSidebar.classList.contains('active')) return;
-    
-    const randomName = names[Math.floor(Math.random() * names.length)];
-    const randomCity = cities[Math.floor(Math.random() * cities.length)];
-    const randomId = Math.floor(Math.random() * 70);
-    
-    document.getElementById('notifName').innerHTML = `<strong>${randomName}</strong>`;
-    document.getElementById('notifCity').textContent = randomCity;
-    document.getElementById('notifAvatar').src = `https://i.pravatar.cc/100?u=${randomId}`;
-    
-    notif.classList.add('show' );
-    setTimeout(() => notif.classList.remove('show'), 5000);
-}
-
-// Inicialização
-window.addEventListener('load', function() {
-    // Iniciar Timer (15 min)
-    const display = document.querySelector('#countdown');
-    if(display) startTimer(60 * 15, display);
-
-    // Iniciar Notificações
-    setTimeout(showNotification, 4000);
-    setInterval(showNotification, 15000);
-});
-
         /* --- LÓGICA DO CARRINHO (ISOLADA) --- */
         (function() {
             let cart = [];
@@ -3259,17 +3223,6 @@ const params = new URLSearchParams({
             }, 1000);
         });
     </script>
-    
-
-    <!-- Live Sales Notification -->
-    <div class="live-notification" id="liveNotification">
-        <button class="close-notif" id="closeNotif" aria-label="Fechar">&times;</button>
-        <img src="https://i.pravatar.cc/100?u=1" id="notifAvatar" alt="User">
-        <div class="notif-content">
-            <p id="notifText"><strong>João Silva</strong> de São Paulo/SP acabou de comprar!</p>
-            <span id="notifTime">Há 2 minutos</span>
-        </div>
-    </div>
 
     <!-- Sticky CTA Mobile -->
     <div class="sticky-cta-mobile" id="stickyCtaMobile">
