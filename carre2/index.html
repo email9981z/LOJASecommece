@@ -2588,16 +2588,21 @@ const allReviews = [
             pageReviews.forEach((review, index) => {
                 const card = document.createElement('div');
                 card.className = 'review-card';
-                if (index < 2) { card.classList.add('has-image'); }
+                // Adiciona classe has-image para todas as avaliações (index < 4)
+                if (index < 4) { card.classList.add('has-image'); }
+                
                 let starsHtml = '';
                 for(let i=0; i<5; i++) starsHtml += `<i class="${i < review.rating ? 'fas' : 'far'} fa-star"></i>`;
                 
-                // Lógica para pegar imagens seguindo a ordem do carrossel (2 por página)
+                // Lógica para cada avaliação ter uma imagem diferente seguindo a ordem do carrossel
                 let imageHtml = '';
-                if (index < 2) {
-                    // Calcula o índice da imagem baseado na página e na posição dentro da página
+                if (index < 4) {
+                    // imageIndex usa startIndex (página) + index (posição na página) para ser único
                     const imageIndex = (startIndex + index) % reviewImages.length;
-                    imageHtml = `<div class="review-image-container" onclick="openImageModal('${reviewImages[imageIndex]}')"><img src="${reviewImages[imageIndex]}" alt="Avaliação do Cliente" class="review-image"></div>`;
+                    const imageUrl = reviewImages[imageIndex];
+                    imageHtml = `<div class="review-image-container" onclick="openImageModal('${imageUrl}')">
+                                    <img src="${imageUrl}" alt="Avaliação do Cliente" class="review-image">
+                                 </div>`;
                 }
 
                 card.innerHTML = `
@@ -2670,6 +2675,24 @@ const allReviews = [
             pagination.appendChild(nextBtn);
         }
 
+        
+        function openImageModal(src) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            if (modal && modalImg) {
+                modalImg.src = src;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+    
         function scrollToReviews() {
             const section = document.querySelector('.reviews-section');
             window.scrollTo({
