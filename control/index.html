@@ -2482,7 +2482,7 @@ const allReviews = [
             pageReviews.forEach((review, index) => {
                 const card = document.createElement('div');
                 card.className = 'review-card';
-                if (index < 2) { card.classList.add('has-image'); }
+                if (index < 4) { card.classList.add('has-image'); }
                 let starsHtml = '';
                 for(let i=0; i<5; i++) starsHtml += `<i class="${i < review.rating ? 'fas' : 'far'} fa-star"></i>`;
                 
