@@ -57,16 +57,6 @@
         }
 
         /* --- LIGHTBOX STYLES --- */
-        /* --- ZOOM STYLES --- */
-        .image-modal-content {
-            cursor: zoom-in;
-            transition: transform 0.3s ease, cursor 0.3s ease;
-        }
-        .image-modal-content.zoomed {
-            cursor: zoom-out;
-            transform: scale(2);
-        }
-
         .image-modal {
             display: none;
             position: fixed;
@@ -2686,88 +2676,21 @@ const allReviews = [
         }
 
         
-        
-        let isZoomed = false;
-        let startX, startY, x = 0, y = 0;
-
         window.openImageModal = function(src) {
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImage');
             if (modal && modalImg) {
                 modalImg.src = src;
-                modalImg.style.transform = 'scale(1)';
-                modalImg.classList.remove('zoomed');
-                isZoomed = false;
-                x = 0; y = 0;
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
         }
-
         window.closeImageModal = function() {
             const modal = document.getElementById('imageModal');
             if (modal) {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
             }
-        }
-
-        // Lógica de Zoom e Pan
-        document.addEventListener('DOMContentLoaded', () => {
-            const modalImg = document.getElementById('modalImage');
-            if (!modalImg) return;
-
-            modalImg.addEventListener('click', (e) => {
-                e.stopPropagation();
-                isZoomed = !isZoomed;
-                if (isZoomed) {
-                    modalImg.classList.add('zoomed');
-                    modalImg.style.transform = 'scale(2)';
-                } else {
-                    modalImg.classList.remove('zoomed');
-                    modalImg.style.transform = 'scale(1)';
-                    x = 0; y = 0;
-                }
-            });
-
-            modalImg.addEventListener('mousedown', (e) => {
-                if (!isZoomed) return;
-                startX = e.clientX - x;
-                startY = e.clientY - y;
-                modalImg.style.cursor = 'grabbing';
-                
-                const onMouseMove = (e) => {
-                    x = e.clientX - startX;
-                    y = e.clientY - startY;
-                    modalImg.style.transform = `scale(2) translate(${x/2}px, ${y/2}px)`;
-                };
-
-                const onMouseUp = () => {
-                    modalImg.style.cursor = 'zoom-out';
-                    document.removeEventListener('mousemove', onMouseMove);
-                    document.removeEventListener('mouseup', onMouseUp);
-                };
-
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', onMouseUp);
-            });
-
-            // Touch support for mobile
-            modalImg.addEventListener('touchstart', (e) => {
-                if (!isZoomed || e.touches.length !== 1) return;
-                startX = e.touches[0].clientX - x;
-                startY = e.touches[0].clientY - y;
-            });
-
-            modalImg.addEventListener('touchmove', (e) => {
-                if (!isZoomed || e.touches.length !== 1) return;
-                e.preventDefault();
-                x = e.touches[0].clientX - startX;
-                y = e.touches[0].clientY - startY;
-                modalImg.style.transform = `scale(2) translate(${x/2}px, ${y/2}px)`;
-            });
-        });
-
         }
     
         function scrollToReviews() {
