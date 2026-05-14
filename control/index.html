@@ -36,6 +36,42 @@
     <style>
 
         /* --- NOVOS ESTILOS DE ESCASSEZ --- */
+        .review-image-container {
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 100%;
+        }
+        .review-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 10px 0;
+            margin-bottom: 20px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        }
+        .carousel-container::-webkit-scrollbar { 
+            display: none;  /* Safari and Chrome */
+        }
+        .carousel-item {
+            flex: 0 0 auto;
+            width: 150px; /* Adjust width as needed */
+            height: 150px; /* Adjust height as needed */
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 :root {
     --scarcity-red: #dc2626;
     --scarcity-bg: #fef2f2;
@@ -806,6 +842,42 @@ body:has(.cart-overlay.active) #notif-premium-container {
         .info-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0; }
 
         /* Avaliações Mobile */
+        .review-image-container {
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 100%;
+        }
+        .review-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        .carousel-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 10px 0;
+            margin-bottom: 20px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        }
+        .carousel-container::-webkit-scrollbar { 
+            display: none;  /* Safari and Chrome */
+        }
+        .carousel-item {
+            flex: 0 0 auto;
+            width: 150px; /* Adjust width as needed */
+            height: 150px; /* Adjust height as needed */
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         .reviews-section { padding: 80px 0; background: #f8fafc; border-top: 1px solid var(--border); }
         .reviews-header { margin-bottom: 48px; text-align: center; }
         .reviews-header h2 { font-size: 32px; font-weight: 800; color: var(--text-main); margin-bottom: 16px; letter-spacing: -0.5px; }
@@ -1938,6 +2010,7 @@ body:has(.cart-overlay.active) #notif-premium-container {
     <section class="reviews-section">
         <div class="container">
             <div class="reviews-header">
+                <div class="carousel-container" id="reviewCarousel"></div>
                 <h2>Avaliações dos Clientes</h2>
                 <div class="overall-rating">
                     <span class="rating-number">4.9</span>
@@ -2010,7 +2083,7 @@ body:has(.cart-overlay.active) #notif-premium-container {
             <div class="footer-grid">
                 <div>
                     <img src="https://i.postimg.cc/kXgctC1b/havan-logo-0.png" alt="Loja Online" class="footer-logo">
-                    <p>Sua fonte confiável para suplementação premium e cuidados pessoais desde 2015. Comprometidos com qualidade, segurança e satisfação do cliente em cada compra.</p>
+                    <p>Sua fonte confiável para tudo que precisar. Comprometidos com qualidade, segurança e satisfação do cliente em cada compra.</p>
                     <div style="margin-top: 20px; display: flex; gap: 12px; align-items: center;">
                         <span style="font-size: 12px; color: #b0b0b0;"><strong>CNPJ:</strong> 12.345.678/0001-99</span>
                     </div>
@@ -2050,7 +2123,7 @@ body:has(.cart-overlay.active) #notif-premium-container {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Hub Suplementos. Todos os direitos reservados. | Desenvolvido com <i class="fas fa-heart" style="color: #ff6b6b;"></i> para sua saúde.</p>
+                <p>&copy; 2026 Loja online. Todos os direitos reservados. | Desenvolvido com <i class="fas fa-heart" style="color: #ff6b6b;"></i>.</p>
             </div>
         </div>
     </footer>
@@ -2127,7 +2200,11 @@ const productImages = [
 
 
         // Initialize on load
-        window.onload = initGallery;
+        window.onload = () => {
+            initGallery();
+            renderCarousel();
+            renderReviews(currentPage);
+        };
         
         // Listen for scroll on main slider to sync thumbnails
         document.getElementById('imageSlider').addEventListener('scroll', () => {
@@ -2142,7 +2219,21 @@ const productImages = [
         });
 
                 // LÓGICA DAS AVALIAÇÕES E TABS
-        const allReviews = [
+        const reviewImages = [
+    "https://i.postimg.cc/FKt480wW/ps5-controller-review-1.jpg",
+    "https://i.postimg.cc/N06X1g9N/ps5-controller-review-2.jpg",
+    "https://i.postimg.cc/fR11931p/ps5-controller-review-3.jpg",
+    "https://i.postimg.cc/d162x81L/ps5-controller-review-4.jpg"
+];
+
+const carouselImages = [
+    "https://i.postimg.cc/Qd05432R/ps5-controller-carousel-1.jpg",
+    "https://i.postimg.cc/SK7w33t3/ps5-controller-carousel-2.jpg",
+    "https://i.postimg.cc/Y0217112/ps5-controller-carousel-3.jpg",
+    "https://i.postimg.cc/J09X4567/ps5-controller-carousel-4.jpg"
+];
+
+const allReviews = [
             {'name': 'Gustavo Martins', 'date': 'Hoje', 'rating': 5, 'content': 'Uso a 2 meses e ja vi resultado, melhorou as falhas da barba.'},
             {'name': 'Lucas Gomes', 'date': 'Hoje', 'rating': 5, 'content': 'Fiz os testes e é original, podem comprar que vale a pena.'},
             {'name': 'Rodrigo Pedro', 'date': 'Hoje', 'rating': 5, 'content': 'Chegou rapido mas a caixa veio meio amaçada, mas nao afetou o produto ento de boa.'},
@@ -2167,6 +2258,16 @@ const productImages = [
         let currentPage = 1;
         const reviewsPerPage = 4;
 
+        function renderCarousel() {
+            const carouselContainer = document.getElementById('reviewCarousel');
+            if (!carouselContainer) return;
+            carouselContainer.innerHTML = carouselImages.map(img => `
+                <div class="carousel-item">
+                    <img src="${img}" alt="Avaliação do Cliente">
+                </div>
+            `).join('');
+        }
+
         function renderReviews(page) {
             const grid = document.getElementById('reviewsGrid');
             if(!grid) return;
@@ -2174,9 +2275,10 @@ const productImages = [
             const startIndex = (page - 1) * reviewsPerPage;
             const pageReviews = allReviews.slice(startIndex, startIndex + reviewsPerPage);
 
-            pageReviews.forEach(review => {
+            pageReviews.forEach((review, index) => {
                 const card = document.createElement('div');
                 card.className = 'review-card';
+                if (index < 2) { card.classList.add('has-image'); }
                 let starsHtml = '';
                 for(let i=0; i<5; i++) starsHtml += `<i class="${i < review.rating ? 'fas' : 'far'} fa-star"></i>`;
                 card.innerHTML = `
@@ -2188,6 +2290,7 @@ const productImages = [
                                 <div class="verified-badge"><i class="fas fa-check-circle"></i> Compra Verificada</div>
                             </div>
                         </div>
+                        ${index < 2 && reviewImages[startIndex + index] ? `<div class="review-image-container"><img src="${reviewImages[startIndex + index]}" alt="Avaliação do Cliente" class="review-image"></div>` : ''}
                         <div class="review-date">${review.date}</div>
                     </div>
                     <div class="review-stars">${starsHtml}</div>
