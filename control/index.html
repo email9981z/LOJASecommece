@@ -2380,39 +2380,62 @@ const allReviews = [
             const carouselContainer = document.getElementById('reviewCarousel');
             if (!carouselContainer) return;
             
-            // Duplicamos as imagens para criar a sensação de infinito (5 conjuntos para maior margem)
-            const multiImages = [...carouselImages, ...carouselImages, ...carouselImages, ...carouselImages, ...carouselImages];
+            // Para um efeito infinito perfeito, clonamos os itens
+            // Criamos a estrutura: [Clones Finais] [Originais] [Clones Iniciais]
+            // Mas para simplificar e garantir fluidez, usamos a técnica de triplicação
+            const tripleImages = [...carouselImages, ...carouselImages, ...carouselImages];
             
-            carouselContainer.innerHTML = multiImages.map(img => `
+            carouselContainer.innerHTML = tripleImages.map(img => `
                 <div class="carousel-item" onclick="openImageModal('${img}')">
                     <img src="${img}" alt="Avaliação do Cliente">
                 </div>
             `).join('');
 
-            let isScrolling = false;
-            const itemWidth = 120 + 12; // largura (120) + gap (12)
-            const totalWidth = carouselImages.length * itemWidth;
+            let isResetting = false;
 
-            const handleInfiniteScroll = () => {
-                if (isScrolling) return;
+            carouselContainer.addEventListener('scroll', () => {
+                if (isResetting) return;
+
+                const itemWidth = carouselContainer.querySelector('.carousel-item').offsetWidth + 12;
+                const totalWidth = carouselImages.length * itemWidth;
                 
-                const scrollLeft = carouselContainer.scrollLeft;
-                
-                // Se estiver muito perto das extremidades (conjunto 1 ou conjunto 5), volta para o meio (conjunto 3)
-                if (scrollLeft < totalWidth) {
-                    isScrolling = true;
-                    carouselContainer.scrollLeft = scrollLeft + totalWidth * 2;
-                    setTimeout(() => isScrolling = false, 10);
-                } else if (scrollLeft > totalWidth * 3) {
-                    isScrolling = true;
-                    carouselContainer.scrollLeft = scrollLeft - totalWidth * 2;
-                    setTimeout(() => isScrolling = false, 10);
+                // Margem de segurança para o reset ser imperceptível
+                const threshold = 5; 
+
+                if (carouselContainer.scrollLeft <= threshold) {
+                    isResetting = true;
+                    carouselContainer.style.scrollBehavior = 'auto';
+                    carouselContainer.scrollLeft = totalWidth;
+                    // Força um reflow para garantir que o scrollBehavior 'auto' seja aplicado antes de voltar para 'smooth'
+                    carouselContainer.offsetHeight; 
+                    carouselContainer.style.scrollBehavior = 'smooth';
+                    isResetting = false;
+                } else if (carouselContainer.scrollLeft >= (totalWidth * 2) - threshold) {
+                    isResetting = true;
+                    carouselContainer.style.scrollBehavior = 'auto';
+                    carouselContainer.scrollLeft = totalWidth;
+                    carouselContainer.offsetHeight;
+                    carouselContainer.style.scrollBehavior = 'smooth';
+                    isResetting = false;
+                }
+            });
+
+            // Posicionamento inicial sem animação
+            const setInitialPosition = () => {
+                const item = carouselContainer.querySelector('.carousel-item');
+                if (item) {
+                    const itemWidth = item.offsetWidth + 12;
+                    carouselContainer.style.scrollBehavior = 'auto';
+                    carouselContainer.scrollLeft = carouselImages.length * itemWidth;
+                    carouselContainer.style.scrollBehavior = 'smooth';
                 }
             };
 
-            carouselContainer.addEventListener('scroll', handleInfiniteScroll);
-
-            // Suporte a arraste (Drag) para Desktop
+            // Tenta posicionar imediatamente e também após um curto delay para garantir que o layout foi renderizado
+            setInitialPosition();
+            setTimeout(setInitialPosition, 100);
+            
+            // Adiciona suporte a arraste (drag) para desktop para melhorar a experiência
             let isDown = false;
             let startX;
             let scrollLeft;
@@ -2422,25 +2445,23 @@ const allReviews = [
                 carouselContainer.classList.add('active');
                 startX = e.pageX - carouselContainer.offsetLeft;
                 scrollLeft = carouselContainer.scrollLeft;
+                carouselContainer.style.scrollBehavior = 'auto';
             });
             carouselContainer.addEventListener('mouseleave', () => {
                 isDown = false;
+                carouselContainer.style.scrollBehavior = 'smooth';
             });
             carouselContainer.addEventListener('mouseup', () => {
                 isDown = false;
+                carouselContainer.style.scrollBehavior = 'smooth';
             });
             carouselContainer.addEventListener('mousemove', (e) => {
-                if (!isDown) return;
+                if(!isDown) return;
                 e.preventDefault();
                 const x = e.pageX - carouselContainer.offsetLeft;
                 const walk = (x - startX) * 2;
                 carouselContainer.scrollLeft = scrollLeft - walk;
             });
-
-            // Posiciona no meio (início do terceiro bloco) ao carregar
-            setTimeout(() => {
-                carouselContainer.scrollLeft = totalWidth * 2;
-            }, 100);
         }
 
         function renderReviews(page) {
