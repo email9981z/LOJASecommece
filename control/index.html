@@ -2380,34 +2380,66 @@ const allReviews = [
             const carouselContainer = document.getElementById('reviewCarousel');
             if (!carouselContainer) return;
             
-            // Duplicamos as imagens para criar a sensação de infinito
-            // Criamos 3 conjuntos: [Original] [Original] [Original]
-            const tripleImages = [...carouselImages, ...carouselImages, ...carouselImages];
+            // Duplicamos as imagens para criar a sensação de infinito (5 conjuntos para maior margem)
+            const multiImages = [...carouselImages, ...carouselImages, ...carouselImages, ...carouselImages, ...carouselImages];
             
-            carouselContainer.innerHTML = tripleImages.map(img => `
+            carouselContainer.innerHTML = multiImages.map(img => `
                 <div class="carousel-item" onclick="openImageModal('${img}')">
                     <img src="${img}" alt="Avaliação do Cliente">
                 </div>
             `).join('');
 
-            // Lógica de Scroll Infinito
-            carouselContainer.addEventListener('scroll', () => {
-                const itemWidth = carouselContainer.querySelector('.carousel-item').offsetWidth + 12; // largura + gap
-                const totalWidth = carouselImages.length * itemWidth;
+            let isScrolling = false;
+            const itemWidth = 120 + 12; // largura (120) + gap (12)
+            const totalWidth = carouselImages.length * itemWidth;
+
+            const handleInfiniteScroll = () => {
+                if (isScrolling) return;
                 
-                if (carouselContainer.scrollLeft <= 0) {
-                    // Se chegou no início do primeiro bloco, pula para o início do segundo bloco
-                    carouselContainer.scrollLeft = totalWidth;
-                } else if (carouselContainer.scrollLeft >= totalWidth * 2) {
-                    // Se chegou no final do terceiro bloco, pula para o final do segundo bloco
-                    carouselContainer.scrollLeft = totalWidth;
+                const scrollLeft = carouselContainer.scrollLeft;
+                
+                // Se estiver muito perto das extremidades (conjunto 1 ou conjunto 5), volta para o meio (conjunto 3)
+                if (scrollLeft < totalWidth) {
+                    isScrolling = true;
+                    carouselContainer.scrollLeft = scrollLeft + totalWidth * 2;
+                    setTimeout(() => isScrolling = false, 10);
+                } else if (scrollLeft > totalWidth * 3) {
+                    isScrolling = true;
+                    carouselContainer.scrollLeft = scrollLeft - totalWidth * 2;
+                    setTimeout(() => isScrolling = false, 10);
                 }
+            };
+
+            carouselContainer.addEventListener('scroll', handleInfiniteScroll);
+
+            // Suporte a arraste (Drag) para Desktop
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            carouselContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                carouselContainer.classList.add('active');
+                startX = e.pageX - carouselContainer.offsetLeft;
+                scrollLeft = carouselContainer.scrollLeft;
+            });
+            carouselContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+            });
+            carouselContainer.addEventListener('mouseup', () => {
+                isDown = false;
+            });
+            carouselContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - carouselContainer.offsetLeft;
+                const walk = (x - startX) * 2;
+                carouselContainer.scrollLeft = scrollLeft - walk;
             });
 
-            // Posiciona no meio (início do segundo bloco) ao carregar
+            // Posiciona no meio (início do terceiro bloco) ao carregar
             setTimeout(() => {
-                const itemWidth = carouselContainer.querySelector('.carousel-item').offsetWidth + 12;
-                carouselContainer.scrollLeft = carouselImages.length * itemWidth;
+                carouselContainer.scrollLeft = totalWidth * 2;
             }, 100);
         }
 
