@@ -1723,7 +1723,7 @@ body:has(.cart-overlay.active) #notif-premium-container {
                 <!-- SEÇÃO DE VARIANTES -->
 <div class="variants-section">
     <div class="variants-title">
-        <i class="fas fa-box"></i> Escolha uma Opção
+        <i class="fas fa-ruler-combined"></i> Selecione o Tamanho
     </div>
     <div class="variants-grid" id="variantsContainer">
         <!-- As variantes serão injetadas aqui pelo JavaScript -->
@@ -1760,9 +1760,9 @@ body:has(.cart-overlay.active) #notif-premium-container {
     // 1. Configuração das Variantes
 const variants = [
     {
-        id: 'completo',
-        name: 'Cabo + Fonte (Original)',
-        description: '',
+        id: '58',
+        name: 'Tamanho: 58',
+        description: 'Disponível',
         price: 89.90,
         oldPrice: 176.20,
         discount: 38,
@@ -1775,12 +1775,42 @@ const variants = [
         ]
     },
     {
-        id: 'fonte',
-        name: 'Apenas Fonte (Original)',
-        description: '',
-        price: 59.90,
-        oldPrice: 119.90,
-        discount: 50,
+        id: '60',
+        name: 'Tamanho: 60',
+        description: 'Disponível',
+        price: 89.90,
+        oldPrice: 176.20,
+        discount: 38,
+        isDefault: false,
+        images: [
+            "https://i.postimg.cc/zGRyG35H/D-Q-NP-641456-MLA97917961898-112025-F.webp",
+            "https://i.postimg.cc/PqWN1cCn/D-Q-NP-793314-MLA97918011548-112025-F.webp",
+            "https://i.postimg.cc/0Q9jnfS6/D-Q-NP-871576-MLA97917971772-112025-F.webp",
+            "https://i.postimg.cc/W3sz8nZY/D-Q-NP-865292-MLA98387225141-112025-F.webp"
+        ]
+    },
+    {
+        id: '56',
+        name: 'Tamanho: 56',
+        description: 'Disponível',
+        price: 89.90,
+        oldPrice: 176.20,
+        discount: 38,
+        isDefault: false,
+        images: [
+            "https://i.postimg.cc/zGRyG35H/D-Q-NP-641456-MLA97917961898-112025-F.webp",
+            "https://i.postimg.cc/PqWN1cCn/D-Q-NP-793314-MLA97918011548-112025-F.webp",
+            "https://i.postimg.cc/0Q9jnfS6/D-Q-NP-871576-MLA97917971772-112025-F.webp",
+            "https://i.postimg.cc/W3sz8nZY/D-Q-NP-865292-MLA98387225141-112025-F.webp"
+        ]
+    },
+    {
+        id: '62',
+        name: 'Tamanho: 62',
+        description: 'Disponível',
+        price: 89.90,
+        oldPrice: 176.20,
+        discount: 38,
         isDefault: false,
         images: [
             "https://i.postimg.cc/zGRyG35H/D-Q-NP-641456-MLA97917961898-112025-F.webp",
@@ -2164,7 +2194,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <p>Para garantir a eficácia do capacete, o tamanho deve estar correto. Siga as instruções:</p>
     <ul>
         <li><strong>Como medir:</strong> Passe uma fita métrica em volta da cabeça, 1cm acima das sobrancelhas e orelhas.</li>
-        <li><strong>Tamanhos comuns:</strong> 54 (XS), 56 (S), 58 (M), 60 (L), 62 (XL), 64 (XXL).</li>
+        <li><strong>Tamanhos disponíveis:</strong> 56, 58, 60 e 62.</li>
         <li><strong>Ajuste Inicial:</strong> É normal que o capacete fique justo nas bochechas nos primeiros dias. A forração laceia cerca de 5% com o uso.</li>
         <li><strong>Limpeza:</strong> Use apenas sabão neutro e pano úmido na parte externa. Nunca utilize solventes, pois danificam o verniz e a resina do casco.</li>
     </ul>
