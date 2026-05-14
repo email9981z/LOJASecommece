@@ -42,7 +42,7 @@
             overflow: hidden;
             border: 1px solid #edf2f7;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            max-width: 250px;
+            max-width: 180px; /* Tamanho mais proporcional */
             cursor: pointer;
             transition: transform 0.3s ease;
         }
@@ -859,12 +859,13 @@ body:has(.cart-overlay.active) #notif-premium-container {
             margin-top: 10px;
             border-radius: 8px;
             overflow: hidden;
-            max-width: 100%;
+            max-width: 180px; /* Tamanho mais proporcional no mobile também */
         }
         .review-image {
             width: 100%;
-            height: auto;
+            height: 180px; /* Altura fixa para manter proporção */
             display: block;
+            object-fit: cover;
             border-radius: 8px;
         }
         .carousel-container {
@@ -2297,6 +2298,14 @@ const allReviews = [
                 if (index < 2) { card.classList.add('has-image'); }
                 let starsHtml = '';
                 for(let i=0; i<5; i++) starsHtml += `<i class="${i < review.rating ? 'fas' : 'far'} fa-star"></i>`;
+                
+                // Lógica para pegar imagens de forma cíclica para as duas primeiras avaliações de cada bloco
+                let imageHtml = '';
+                if (index < 2) {
+                    const imageIndex = (index) % reviewImages.length;
+                    imageHtml = `<div class="review-image-container"><img src="${reviewImages[imageIndex]}" alt="Avaliação do Cliente" class="review-image"></div>`;
+                }
+
                 card.innerHTML = `
                     <div class="review-top">
                         <div class="reviewer-info">
@@ -2310,7 +2319,7 @@ const allReviews = [
                     </div>
                     <div class="review-stars">${starsHtml}</div>
                     <div class="review-content">${review.content}</div>
-                    ${index < 2 && reviewImages[startIndex + index] ? `<div class="review-image-container"><img src="${reviewImages[startIndex + index]}" alt="Avaliação do Cliente" class="review-image"></div>` : ''}
+                    ${imageHtml}
                 `;
                 grid.appendChild(card);
             });
