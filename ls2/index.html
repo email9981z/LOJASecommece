@@ -947,7 +947,7 @@ body:has(.cart-overlay.active) #notif-premium-container {
         .reviews-grid::-webkit-scrollbar { display: none; }
         .reviews-grid.active { cursor: grabbing; }
         .review-card { 
-            flex: 0 0 calc(25% - 18px); 
+            flex: 0 0 calc(20% - 20px); 
             min-width: 300px; 
             padding: 28px; 
             border: 1px solid #e2e8f0; 
@@ -2681,8 +2681,8 @@ const allReviews = [
     { 'name': 'Everton R.', 'date': 'Há 23 dias', 'rating': 5, 'content': 'Entrega antes do prazo, parabéns.' }
         ];
         let currentPage = 1;
-        // Configuração: Cada bloco contém 4 avaliações.
-        // Inicialmente exibimos 5 blocos (páginas).
+        // Configuração: O usuário quer blocos de 4 avaliações.
+        // O seletor de blocos deve mostrar apenas 5 botões inicialmente.
         const reviewsPerPage = 4;
         let maxVisiblePage = 5;
 
