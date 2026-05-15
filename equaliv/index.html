@@ -1874,7 +1874,7 @@ document.addEventListener('DOMContentLoaded', function() {
     preloadAllVariantImages();
 });
 
-// Função para pré-carregar e renderizar todas as imagens de todas as variantes
+// Função para pré-carregar todas as imagens de todas as variantes
 function preloadAllVariantImages() {
     const allImages = [];
     
@@ -1889,23 +1889,13 @@ function preloadAllVariantImages() {
         }
     });
 
-    // Cria um container oculto para renderizar as imagens e garantir que o cache seja utilizado
-    let preloadContainer = document.getElementById('preload-images-container');
-    if (!preloadContainer) {
-        preloadContainer = document.createElement('div');
-        preloadContainer.id = 'preload-images-container';
-        preloadContainer.style.display = 'none';
-        document.body.appendChild(preloadContainer);
-    }
-
-    // Renderiza as imagens no container oculto
+    // Cria elementos de imagem ocultos para forçar o carregamento pelo navegador
     allImages.forEach(url => {
         const img = new Image();
         img.src = url;
-        preloadContainer.appendChild(img);
     });
     
-    console.log(`${allImages.length} imagens de variantes pré-carregadas e renderizadas.`);
+    console.log(`${allImages.length} imagens de variantes pré-carregadas.`);
 }
 
   function convertDate(e) {
@@ -3508,18 +3498,19 @@ const params = new URLSearchParams({
             });
         });
 
-        // O spinner agora dura exatamente 1 segundo após o processamento inicial da página
-        setTimeout(function() {
-            const preloader = document.getElementById('preloader');
-            const mainContent = document.getElementById('mainContent');
-            if (preloader) {
-                preloader.classList.add('hidden');
-                setTimeout(() => preloader.remove(), 600);
-            }
-            if (mainContent) {
-                mainContent.classList.add('visible');
-            }
-        }, 1000);
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                const mainContent = document.getElementById('mainContent');
+                if (preloader) {
+                    preloader.classList.add('hidden');
+                    setTimeout(() => preloader.remove(), 600);
+                }
+                if (mainContent) {
+                    mainContent.classList.add('visible');
+                }
+            }, 1000);
+        });
     </script>
 
     <!-- Sticky CTA Mobile -->
