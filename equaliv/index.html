@@ -1844,6 +1844,9 @@ function initializeVariants() {
 function selectVariant(id) {
     selectedVariant = variants.find(v => v.id === id);
     
+    // Rola a tela para o topo automaticamente
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     // Atualiza visual dos cards
     document.querySelectorAll('.variant-card').forEach(c => c.classList.remove('active'));
     
@@ -1863,14 +1866,37 @@ function selectVariant(id) {
     if (typeof initGallery === 'function') {
         initGallery();
     }
-
-
 }
 
 // 4. Chame a inicialização dentro do seu DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeVariants();
+    preloadAllVariantImages();
 });
+
+// Função para pré-carregar todas as imagens de todas as variantes
+function preloadAllVariantImages() {
+    const allImages = [];
+    
+    // Coleta todas as imagens únicas de todas as variantes
+    variants.forEach(variant => {
+        if (variant.images && Array.isArray(variant.images)) {
+            variant.images.forEach(imgUrl => {
+                if (!allImages.includes(imgUrl)) {
+                    allImages.push(imgUrl);
+                }
+            });
+        }
+    });
+
+    // Cria elementos de imagem ocultos para forçar o carregamento pelo navegador
+    allImages.forEach(url => {
+        const img = new Image();
+        img.src = url;
+    });
+    
+    console.log(`${allImages.length} imagens de variantes pré-carregadas.`);
+}
 
   function convertDate(e) {
       var t, o = new Date(e);
