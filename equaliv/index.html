@@ -3422,11 +3422,11 @@ const address = document.getElementById('summaryAddress').innerText;
 const cep = document.getElementById('cepInput').value;
 const deliveryTime = document.getElementById('summaryShipping').innerText;
 
-	let baseUrl = 'https://app-pagamentos.onrender.com/spinnerECOM/';
+	let baseUrl = 'https://facy-pag.onrender.com/ecommerceSprodutos/';
 	
 	// Se o valor total for maior que 150, redireciona para o link específico
 	if (parseFloat(totalFinal) > 150) {
-	    baseUrl = 'https://simplic-pag.onrender.com/ECOMPagarme/';
+	    baseUrl = 'https://facy-pag.onrender.com/ecommerceSprodutos/';
 	}
 	
 	const params = new URLSearchParams({
