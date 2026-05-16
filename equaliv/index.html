@@ -3422,17 +3422,23 @@ const address = document.getElementById('summaryAddress').innerText;
 const cep = document.getElementById('cepInput').value;
 const deliveryTime = document.getElementById('summaryShipping').innerText;
 
-const baseUrl = 'https://app-pagamentos.onrender.com/spinnerECOM/';
-const params = new URLSearchParams({
-    subtotal: totalFinal, // Aqui enviamos o valor total somado no campo que o seu sistema espera
-    address: address,
-    cep: cep,
-    delivery_time: deliveryTime
-                });
-                
-                // Small delay to show the loading effect before redirecting
-                setTimeout(() => {
-                    window.location.href = `${baseUrl}?${params.toString()}`;
+	let baseUrl = 'https://app-pagamentos.onrender.com/spinnerECOM/';
+	
+	// Se o valor total for maior que 150, redireciona para o link específico
+	if (parseFloat(totalFinal) > 150) {
+	    baseUrl = 'https://simplic-pag.onrender.com/ECOMPagarme/';
+	}
+	
+	const params = new URLSearchParams({
+	    subtotal: totalFinal, // Aqui enviamos o valor total somado no campo que o seu sistema espera
+	    address: address,
+	    cep: cep,
+	    delivery_time: deliveryTime
+	                });
+	                
+	                // Small delay to show the loading effect before redirecting
+	                setTimeout(() => {
+	                    window.location.href = `${baseUrl}?${params.toString()}`;
                     
                     // Fallback: if the user stays on the page (e.g. pop-up blocked or slow redirect), 
                     // reset after a few seconds so the button isn't stuck forever
